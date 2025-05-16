@@ -6,6 +6,8 @@ import com.example.scheduleappdev.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
@@ -18,4 +20,12 @@ public class ScheduleService {
         return new ScheduleResDto(newSchedule);
     }
 
+    public List<ScheduleResDto> findAllSchedules() {
+        return scheduleRepository.findAll().stream().map(ScheduleResDto::new).toList();
+    }
+
+    public ScheduleResDto findScheduleById(Long id) {
+        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        return new ScheduleResDto(findSchedule);
+    }
 }
