@@ -2,7 +2,9 @@ package com.example.scheduleappdev.service;
 
 import com.example.scheduleappdev.dto.ScheduleResDto;
 import com.example.scheduleappdev.entity.Schedule;
+import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.repository.ScheduleRepository;
+import com.example.scheduleappdev.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,14 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     public ScheduleResDto createSchedule(String authorName, String todoTitle, String todoContents) {
-        Schedule schedule = new Schedule(authorName, todoTitle, todoContents);
+        User findUser = userRepository.findUserByUserNameOrElseThrow(authorName);
+
+        Schedule schedule = new Schedule(todoTitle, todoContents);
+        schedule.setUser(findUser);
+
         Schedule newSchedule = scheduleRepository.save(schedule);
         return new ScheduleResDto(newSchedule);
     }
@@ -35,7 +42,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleResDto updateSchedule(Long id, String authorName, String todoTitle, String todoContents) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
-        if(!findSchedule.getAuthorName().equals(authorName)) {
+        if (!findSchedule.getUser().getUserName().equals(authorName)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "작성자가 일치하지 않습니다.");
         }
         findSchedule.updateSchedule(todoTitle, todoContents);

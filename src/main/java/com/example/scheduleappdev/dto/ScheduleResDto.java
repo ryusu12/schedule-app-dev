@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ScheduleResDto {
     private final Long scheduleId;
-    private final String authorName;
+    private final Long userId;
     private final String todoTitle;
     private final String todoContents;
     private final LocalDateTime createdDate;
@@ -16,7 +16,7 @@ public class ScheduleResDto {
 
     public ScheduleResDto(Schedule schedule) {
         this.scheduleId = schedule.getScheduleId();
-        this.authorName = schedule.getAuthorName();
+        this.userId = schedule.getUser().getUserId();
         this.todoTitle = schedule.getTodoTitle();
         this.todoContents = schedule.getTodoContents();
         this.createdDate = schedule.getCreatedDate();
