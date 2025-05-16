@@ -21,4 +21,12 @@ public class Schedule extends BaseTimeEntity {
     @Column(columnDefinition = "longtext")
     private String todoContents;
 
+    public Schedule() {}
+
+    public Schedule(String authorName, String todoTitle, String todoContents) {
+        this.authorName = authorName;
+        this.todoTitle = todoTitle;
+        this.todoContents = todoContents;
+    }
+
 }
