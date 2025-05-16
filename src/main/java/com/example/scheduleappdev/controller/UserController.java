@@ -41,4 +41,12 @@ public class UserController {
         UserResDto userResDto = userService.updateUser(id, reqDto.getUserName(), reqDto.getUserEmail());
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
+
+    // todo : 주석 + 띄어쓰기  + 메서드 이름 수정 필요
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

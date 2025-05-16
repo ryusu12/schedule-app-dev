@@ -41,4 +41,9 @@ public class UserService {
         findUser.updateUserEmail(userEmail);
         return new UserResDto(findUser);
     }
+
+    public void deleteUserById(Long id) {
+        User findUser = userRepository.findByIdOrElseThrow(id);
+        userRepository.delete(findUser);
+    }
 }
