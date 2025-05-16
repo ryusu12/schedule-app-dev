@@ -14,12 +14,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
 
     public UserResDto createUser(String userName, String userEmail) {
         User user = new User(userName, userEmail);
-        User newUser = userRepository.save(user);
-        return new UserResDto(newUser);
+        return new UserResDto(userRepository.save(user));
+    }
+
+    public List<UserResDto> findAllUsers() {
+        return userRepository.findAll().stream().map(UserResDto::new).toList();
     }
 
     public UserResDto findUserById(Long id) {
@@ -27,12 +31,8 @@ public class UserService {
         return new UserResDto(user);
     }
 
-    public List<UserResDto> findAllUsers() {
-        return userRepository.findAll().stream().map(UserResDto::new).toList();
-    }
-
     @Transactional
-    public UserResDto updateUser(Long id, String userName, String userEmail) {
+    public UserResDto updateUserEmail(Long id, String userName, String userEmail) {
         User findUser = userRepository.findByIdOrElseThrow(id);
         // 이름으로 비교
         if (!findUser.getUserName().equals(userName)) {
@@ -46,4 +46,5 @@ public class UserService {
         User findUser = userRepository.findByIdOrElseThrow(id);
         userRepository.delete(findUser);
     }
+
 }

@@ -23,11 +23,11 @@ public class ScheduleService {
     public ScheduleResDto createSchedule(String authorName, String todoTitle, String todoContents) {
         User findUser = userRepository.findUserByUserNameOrElseThrow(authorName);
 
+        // 일정에 유저 연결
         Schedule schedule = new Schedule(todoTitle, todoContents);
         schedule.setUser(findUser);
 
-        Schedule newSchedule = scheduleRepository.save(schedule);
-        return new ScheduleResDto(newSchedule);
+        return new ScheduleResDto(scheduleRepository.save(schedule));
     }
 
     public List<ScheduleResDto> findAllSchedules() {
@@ -42,6 +42,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleResDto updateSchedule(Long id, String authorName, String todoTitle, String todoContents) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        // 이름으로 비교
         if (!findSchedule.getUser().getUserName().equals(authorName)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "작성자가 일치하지 않습니다.");
         }
@@ -53,4 +54,5 @@ public class ScheduleService {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
         scheduleRepository.delete(findSchedule);
     }
+
 }

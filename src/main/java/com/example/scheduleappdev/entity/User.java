@@ -18,7 +18,8 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String userEmail;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String userName, String userEmail) {
         this.userName = userName;
@@ -28,4 +29,5 @@ public class User extends BaseTimeEntity {
     public void updateUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
 }

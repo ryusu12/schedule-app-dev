@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class CreateUserReqDto {
+
     private final String userName;
     private final String userEmail;
 
@@ -11,4 +12,5 @@ public class CreateUserReqDto {
         this.userName = userName;
         this.userEmail = userEmail;
     }
+
 }

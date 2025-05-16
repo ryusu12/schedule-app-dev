@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class UserResDto {
+
     private final Long userId;
     private final String userName;
     private final String userEmail;
@@ -20,4 +21,5 @@ public class UserResDto {
         this.createdDate = user.getCreatedDate();
         this.updatedDate = user.getUpdatedDate();
     }
+
 }

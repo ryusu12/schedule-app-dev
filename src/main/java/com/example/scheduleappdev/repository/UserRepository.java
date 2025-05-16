@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+
     Optional<User> findUserByUserName(String userName);
 
     default User findUserByUserNameOrElseThrow(String userName) {
@@ -17,4 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     default User findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
     }
+
 }

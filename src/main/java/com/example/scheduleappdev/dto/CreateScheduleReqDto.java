@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class CreateScheduleReqDto {
+
     private final String authorName;
     private final String todoTitle;
     private final String todoContents;
@@ -13,4 +14,5 @@ public class CreateScheduleReqDto {
         this.todoTitle = todoTitle;
         this.todoContents = todoContents;
     }
+
 }

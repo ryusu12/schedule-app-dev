@@ -14,4 +14,5 @@ public class UpdateScheduleReqDto {
         this.todoTitle = todoTitle;
         this.todoContents = todoContents;
     }
+
 }

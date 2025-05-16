@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ScheduleResDto {
+
     private final Long scheduleId;
     private final Long userId;
     private final String todoTitle;
@@ -22,4 +23,5 @@ public class ScheduleResDto {
         this.createdDate = schedule.getCreatedDate();
         this.updatedDate = schedule.getUpdatedDate();
     }
+
 }

@@ -24,7 +24,8 @@ public class Schedule extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Schedule() {}
+    public Schedule() {
+    }
 
     public Schedule(String todoTitle, String todoContents) {
         this.todoTitle = todoTitle;
@@ -35,4 +36,5 @@ public class Schedule extends BaseTimeEntity {
         this.todoTitle = todoTitle;
         this.todoContents = todoContents;
     }
+
 }
