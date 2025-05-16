@@ -29,4 +29,8 @@ public class Schedule extends BaseTimeEntity {
         this.todoContents = todoContents;
     }
 
+    public void updateSchedule(String todoTitle, String todoContents) {
+        this.todoTitle = todoTitle;
+        this.todoContents = todoContents;
+    }
 }
