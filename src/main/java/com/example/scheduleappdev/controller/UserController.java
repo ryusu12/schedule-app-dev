@@ -1,6 +1,7 @@
 package com.example.scheduleappdev.controller;
 
 import com.example.scheduleappdev.dto.CreateUserReqDto;
+import com.example.scheduleappdev.dto.UpdateUserEmailReqDto;
 import com.example.scheduleappdev.dto.UserResDto;
 import com.example.scheduleappdev.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -35,4 +36,9 @@ public class UserController {
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserEmailReqDto reqDto) {
+        UserResDto userResDto = userService.updateUser(id, reqDto.getUserName(), reqDto.getUserEmail());
+        return new ResponseEntity<>(userResDto, HttpStatus.OK);
+    }
 }

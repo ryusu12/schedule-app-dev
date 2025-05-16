@@ -24,4 +24,8 @@ public class User extends BaseTimeEntity {
         this.userName = userName;
         this.userEmail = userEmail;
     }
+
+    public void updateUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 }
