@@ -22,6 +22,11 @@ public class UserService {
         return new UserResDto(userRepository.save(user));
     }
 
+    public UserResDto login(String userEmail, String password) {
+        User user = userRepository.findUserByUserEmailAndPasswordOrElseThrow(userEmail, password);
+        return new UserResDto(user);
+    }
+
     public List<UserResDto> findAllUsers() {
         return userRepository.findAll().stream().map(UserResDto::new).toList();
     }
