@@ -6,6 +6,7 @@ import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.repository.ScheduleRepository;
 import com.example.scheduleappdev.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
@@ -27,6 +29,7 @@ public class ScheduleService {
         Schedule schedule = new Schedule(todoTitle, todoContents);
         schedule.setUser(findUser);
 
+        log.info("일정 생성 : scheduleId = {}, userName = {}", schedule.getScheduleId(), findUser.getUserName());
         return new ScheduleResDto(scheduleRepository.save(schedule));
     }
 
@@ -36,6 +39,7 @@ public class ScheduleService {
 
     public ScheduleResDto findScheduleById(Long id) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        log.info("일정 조회 : id = {}", id);
         return new ScheduleResDto(findSchedule);
     }
 
@@ -47,11 +51,13 @@ public class ScheduleService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "작성자가 일치하지 않습니다.");
         }
         findSchedule.updateSchedule(todoTitle, todoContents);
+        log.info("일정 수정 : id = {}", id);
         return new ScheduleResDto(findSchedule);
     }
 
     public void deleteScheduleById(Long id) {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        log.info("일정 삭제 : id = {}", id);
         scheduleRepository.delete(findSchedule);
     }
 

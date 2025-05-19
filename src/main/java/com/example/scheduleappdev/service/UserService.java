@@ -4,6 +4,7 @@ import com.example.scheduleappdev.dto.UserResDto;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -19,6 +21,7 @@ public class UserService {
 
     public UserResDto createUser(String userName, String userEmail, String password) {
         User user = new User(userName, userEmail, password);
+        log.info("유저 생성 : name = {}", userName);
         return new UserResDto(userRepository.save(user));
     }
 
@@ -33,6 +36,7 @@ public class UserService {
 
     public UserResDto findUserById(Long id) {
         User user = userRepository.findByIdOrElseThrow(id);
+        log.info("유저 조회 : name = {}", user.getUserName());
         return new UserResDto(user);
     }
 
@@ -44,11 +48,13 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
         findUser.updateUserPassword(newPassword);
+        log.info("유저 수정 : name = {}", findUser.getUserName());
         return new UserResDto(findUser);
     }
 
     public void deleteUserById(Long id) {
         User findUser = userRepository.findByIdOrElseThrow(id);
+        log.info("유저 삭제 : name = {}", findUser.getUserName());
         userRepository.delete(findUser);
     }
 

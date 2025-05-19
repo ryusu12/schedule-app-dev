@@ -8,12 +8,14 @@ import com.example.scheduleappdev.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    public ResponseEntity<Void> login(
             @RequestBody LoginUserReqDto reqDto,
             HttpServletRequest req
     ) {
@@ -37,21 +39,24 @@ public class UserController {
         HttpSession session = req.getSession();
         session.setAttribute("loginUser", userResDto);
 
-        return new ResponseEntity<>("로그인 성공 : " + userResDto.getUserName(), HttpStatus.OK);
+        log.info("로그인 성공 : name = {}", userResDto.getUserName());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest req) {
+    public ResponseEntity<Void> logout(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        return new ResponseEntity<>("로그아웃", HttpStatus.OK);
+        log.info("로그아웃");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<UserResDto>> findAllUsers() {
         List<UserResDto> userResDtoList = userService.findAllUsers();
+        log.info("유저 \"{}\"명 조회", userResDtoList.size());
         return new ResponseEntity<>(userResDtoList, HttpStatus.OK);
     }
 

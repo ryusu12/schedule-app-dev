@@ -5,12 +5,14 @@ import com.example.scheduleappdev.dto.ScheduleResDto;
 import com.example.scheduleappdev.dto.UpdateScheduleReqDto;
 import com.example.scheduleappdev.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class ScheduleController {
     @GetMapping
     public ResponseEntity<List<ScheduleResDto>> findAllSchedules() {
         List<ScheduleResDto> scheduleResDtoList = scheduleService.findAllSchedules();
+        log.info("일정 \"{}\"개 조회", scheduleResDtoList.size());
         return new ResponseEntity<>(scheduleResDtoList, HttpStatus.OK);
     }
 

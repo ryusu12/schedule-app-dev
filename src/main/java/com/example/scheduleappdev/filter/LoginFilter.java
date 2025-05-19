@@ -31,6 +31,7 @@ public class LoginFilter implements Filter {
                 httpRes.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpRes.setContentType("text/plain; charset=utf-8");
                 httpRes.getWriter().write("로그인이 필요합니다.");
+                log.warn("로그인이 필요합니다.");
                 return;
             }
         }
