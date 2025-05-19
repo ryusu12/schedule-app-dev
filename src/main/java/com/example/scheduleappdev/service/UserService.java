@@ -2,13 +2,12 @@ package com.example.scheduleappdev.service;
 
 import com.example.scheduleappdev.dto.UserResDto;
 import com.example.scheduleappdev.entity.User;
+import com.example.scheduleappdev.exception.UnauthorizedException;
 import com.example.scheduleappdev.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class UserService {
         User findUser = userRepository.findByIdOrElseThrow(id);
         // 비밀번호로 비교
         if (!findUser.getPassword().equals(oldPassword)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+            throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
         }
         findUser.updateUserPassword(newPassword);
         log.info("유저 수정 : name = {}", findUser.getUserName());
