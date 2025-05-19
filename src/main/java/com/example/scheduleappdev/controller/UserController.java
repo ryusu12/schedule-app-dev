@@ -1,7 +1,7 @@
 package com.example.scheduleappdev.controller;
 
 import com.example.scheduleappdev.dto.CreateUserReqDto;
-import com.example.scheduleappdev.dto.UpdateUserEmailReqDto;
+import com.example.scheduleappdev.dto.UpdateUserPasswordReqDto;
 import com.example.scheduleappdev.dto.UserResDto;
 import com.example.scheduleappdev.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,9 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping()
+    @PostMapping("/signup")
     public ResponseEntity<UserResDto> createUser(@RequestBody CreateUserReqDto reqDto) {
-        UserResDto userResDto = userService.createUser(reqDto.getUserName(), reqDto.getUserEmail());
+        UserResDto userResDto = userService.createUser(reqDto.getUserName(), reqDto.getUserEmail(), reqDto.getPassword());
         return new ResponseEntity<>(userResDto, HttpStatus.CREATED);
     }
 
@@ -37,8 +37,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResDto> updateUserEmail(@PathVariable Long id, @RequestBody UpdateUserEmailReqDto reqDto) {
-        UserResDto userResDto = userService.updateUserEmail(id, reqDto.getUserName(), reqDto.getUserEmail());
+    public ResponseEntity<UserResDto> updateUserPassword(@PathVariable Long id, @RequestBody UpdateUserPasswordReqDto reqDto) {
+        UserResDto userResDto = userService.updateUserPassword(id, reqDto.getOldPassword(), reqDto.getNewPassword());
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
 

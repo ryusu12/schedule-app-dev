@@ -13,6 +13,7 @@ CREATE TABLE `user`
     `user_id`      BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '유저_ID',
     `user_name`    VARCHAR(100) NOT NULL COMMENT '유저명',
     `user_email`   VARCHAR(100) NOT NULL COMMENT '이메일',
+    `password`     VARCHAR(100) NOT NULL COMMENT '비밀번호',
     `created_date` DATETIME     NOT NULL COMMENT '작성일',
     `updated_date` DATETIME     NOT NULL COMMENT '수정일'
 );

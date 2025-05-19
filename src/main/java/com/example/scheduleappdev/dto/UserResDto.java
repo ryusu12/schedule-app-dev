@@ -11,6 +11,7 @@ public class UserResDto {
     private final Long userId;
     private final String userName;
     private final String userEmail;
+    private final String password;
     private final LocalDateTime createdDate;
     private final LocalDateTime updatedDate;
 
@@ -18,6 +19,7 @@ public class UserResDto {
         this.userId = user.getUserId();
         this.userName = user.getUserName();
         this.userEmail = user.getUserEmail();
+        this.password = user.getPassword();
         this.createdDate = user.getCreatedDate();
         this.updatedDate = user.getUpdatedDate();
     }

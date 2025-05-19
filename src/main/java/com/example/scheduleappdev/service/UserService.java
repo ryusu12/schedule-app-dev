@@ -17,8 +17,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserResDto createUser(String userName, String userEmail) {
-        User user = new User(userName, userEmail);
+    public UserResDto createUser(String userName, String userEmail, String password) {
+        User user = new User(userName, userEmail, password);
         return new UserResDto(userRepository.save(user));
     }
 
@@ -32,13 +32,13 @@ public class UserService {
     }
 
     @Transactional
-    public UserResDto updateUserEmail(Long id, String userName, String userEmail) {
+    public UserResDto updateUserPassword(Long id, String oldPassword, String newPassword) {
         User findUser = userRepository.findByIdOrElseThrow(id);
-        // 이름으로 비교
-        if (!findUser.getUserName().equals(userName)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유저가 일치하지 않습니다.");
+        // 비밀번호로 비교
+        if (!findUser.getPassword().equals(oldPassword)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
         }
-        findUser.updateUserEmail(userEmail);
+        findUser.updateUserPassword(newPassword);
         return new UserResDto(findUser);
     }
 
