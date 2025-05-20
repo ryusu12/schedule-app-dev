@@ -23,12 +23,14 @@ public class UserController {
     private final UserService userService;
     private final SessionService sessionService;
 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<UserResDto> createUser(@Valid @RequestBody CreateUserReqDto reqDto) {
         UserResDto userResDto = userService.createUser(reqDto.getUserName(), reqDto.getUserEmail(), reqDto.getPassword());
         return new ResponseEntity<>(userResDto, HttpStatus.CREATED);
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<Void> login(
             @Valid @RequestBody LoginUserReqDto reqDto,
@@ -39,12 +41,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest req) {
         sessionService.logout(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // 유저 조회
     @GetMapping
     public ResponseEntity<List<UserResDto>> findAllUsers() {
         List<UserResDto> userResDtoList = userService.findAllUsers();
@@ -58,6 +62,7 @@ public class UserController {
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
 
+    // 비밀번호 변경
     @PatchMapping("/password")
     public ResponseEntity<UserResDto> updateUserPassword(
             @Valid @RequestBody UpdateUserPasswordReqDto reqDto,
@@ -68,12 +73,14 @@ public class UserController {
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
 
+    // 회원탈퇴
     @DeleteMapping("/withdraw")
     public ResponseEntity<Void> deleteUser(
             @Valid @RequestBody DeleteUserReqDto reqDto,
             HttpServletRequest req
     ) {
         User findUser = sessionService.findUserBySession(req);
+        //유저 삭제 후 로그아웃
         userService.deleteUser(findUser, reqDto.getPassword());
         sessionService.logout(req);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

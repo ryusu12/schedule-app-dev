@@ -28,8 +28,8 @@ public class SessionService {
         HttpSession session = req.getSession(false);
         if (session != null) {
             session.invalidate();
+            log.info("로그아웃");
         }
-        log.info("로그아웃");
     }
 
     public User findUserBySession(HttpServletRequest req) {

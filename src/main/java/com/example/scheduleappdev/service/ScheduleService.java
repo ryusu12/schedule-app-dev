@@ -55,8 +55,9 @@ public class ScheduleService {
         scheduleRepository.delete(findSchedule);
     }
 
-    public void checkScheduleAuthor(Schedule schedule, User user) {
+    private void checkScheduleAuthor(Schedule schedule, User user) {
         if (!schedule.getUser().getUserName().equals(user.getUserName())) {
+            log.warn("작성자가 일치하지 않습니다.");
             throw new UnauthorizedException("작성자가 일치하지 않습니다.");
         }
     }
