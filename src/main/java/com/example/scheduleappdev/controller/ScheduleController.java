@@ -4,6 +4,7 @@ import com.example.scheduleappdev.dto.CreateScheduleReqDto;
 import com.example.scheduleappdev.dto.ScheduleResDto;
 import com.example.scheduleappdev.dto.UpdateScheduleReqDto;
 import com.example.scheduleappdev.service.ScheduleService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,14 +44,19 @@ public class ScheduleController {
     @PatchMapping("/{id}")
     public ResponseEntity<ScheduleResDto> updateSchedule(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateScheduleReqDto reqDto) {
-        ScheduleResDto scheduleResDto = scheduleService.updateSchedule(id, reqDto.getAuthorName(), reqDto.getTodoTitle(), reqDto.getTodoContents());
+            @Valid @RequestBody UpdateScheduleReqDto reqDto,
+            HttpServletRequest req
+    ) {
+        ScheduleResDto scheduleResDto = scheduleService.updateSchedule(id, reqDto.getTodoTitle(), reqDto.getTodoContents(), req);
         return new ResponseEntity<>(scheduleResDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteScheduleById(@PathVariable Long id) {
-        scheduleService.deleteScheduleById(id);
+    public ResponseEntity<Void> deleteScheduleById(
+            @PathVariable Long id,
+            HttpServletRequest req
+    ) {
+        scheduleService.deleteScheduleById(id, req);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

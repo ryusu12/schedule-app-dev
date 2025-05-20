@@ -1,5 +1,6 @@
 package com.example.scheduleappdev.filter;
 
+import com.example.scheduleappdev.common.Const;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class LoginFilter implements Filter {
 
         if(!isWhiteList(reqURI)) {
             HttpSession session = httpReq.getSession(false);
-            if(session == null || session.getAttribute("loginUser") == null) {
+            if(session == null || session.getAttribute(Const.LOGIN_USER) == null) {
                 Map<String, Object> errorBody = new HashMap<>();
                 errorBody.put("timestamp", LocalDateTime.now().toString());
                 errorBody.put("status", HttpStatus.UNAUTHORIZED.value());

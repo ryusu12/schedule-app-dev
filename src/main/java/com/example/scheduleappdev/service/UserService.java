@@ -1,9 +1,12 @@
 package com.example.scheduleappdev.service;
 
+import com.example.scheduleappdev.common.Const;
 import com.example.scheduleappdev.dto.UserResDto;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.exception.UnauthorizedException;
 import com.example.scheduleappdev.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,20 @@ public class UserService {
     public UserResDto login(String userEmail, String password) {
         User user = userRepository.findUserByUserEmailAndPasswordOrElseThrow(userEmail, password);
         return new UserResDto(user);
+    }
+
+    public void makeSession(HttpServletRequest req, UserResDto userResDto) {
+        HttpSession session = req.getSession();
+        session.setAttribute(Const.LOGIN_USER, userResDto);
+        log.info("로그인 성공 : name = {}", userResDto.getUserName());
+    }
+
+    public void logout(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        log.info("로그아웃");
     }
 
     public List<UserResDto> findAllUsers() {
@@ -55,7 +72,7 @@ public class UserService {
     public void deleteUser(String password, HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session != null) {
-            UserResDto loginUser = (UserResDto) session.getAttribute("loginUser");
+            UserResDto loginUser = (UserResDto) session.getAttribute(Const.LOGIN_USER);
             User findUser = userRepository.findByIdOrElseThrow(loginUser.getUserId());
 
             if (!findUser.getPassword().equals(password)) {

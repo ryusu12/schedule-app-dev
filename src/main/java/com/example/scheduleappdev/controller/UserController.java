@@ -1,12 +1,8 @@
 package com.example.scheduleappdev.controller;
 
-import com.example.scheduleappdev.dto.CreateUserReqDto;
-import com.example.scheduleappdev.dto.LoginUserReqDto;
-import com.example.scheduleappdev.dto.UpdateUserPasswordReqDto;
-import com.example.scheduleappdev.dto.UserResDto;
+import com.example.scheduleappdev.dto.*;
 import com.example.scheduleappdev.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,21 +32,13 @@ public class UserController {
             HttpServletRequest req
     ) {
         UserResDto userResDto = userService.login(reqDto.getUserEmail(), reqDto.getPassword());
-
-        HttpSession session = req.getSession();
-        session.setAttribute("loginUser", userResDto);
-
-        log.info("로그인 성공 : name = {}", userResDto.getUserName());
+        userService.makeSession(req, userResDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        log.info("로그아웃");
+        userService.logout(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
