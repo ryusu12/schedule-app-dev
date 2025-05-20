@@ -20,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserResDto createUser(String userName, String userEmail, String password) {
+        userRepository.isExistUserNameOrEmail(userName, userEmail);
         User user = new User(userName, userEmail, password);
         log.info("유저 생성 : name = {}", userName);
         return new UserResDto(userRepository.save(user));
