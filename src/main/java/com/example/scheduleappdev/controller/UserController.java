@@ -1,6 +1,8 @@
 package com.example.scheduleappdev.controller;
 
 import com.example.scheduleappdev.dto.*;
+import com.example.scheduleappdev.entity.User;
+import com.example.scheduleappdev.service.SessionService;
 import com.example.scheduleappdev.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,6 +21,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final SessionService sessionService;
 
     @PostMapping("/signup")
     public ResponseEntity<UserResDto> createUser(@Valid @RequestBody CreateUserReqDto reqDto) {
@@ -32,13 +35,13 @@ public class UserController {
             HttpServletRequest req
     ) {
         UserResDto userResDto = userService.login(reqDto.getUserEmail(), reqDto.getPassword());
-        userService.makeSession(req, userResDto);
+        sessionService.makeSession(req, userResDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest req) {
-        userService.logout(req);
+        sessionService.logout(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -55,12 +58,13 @@ public class UserController {
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/password")
     public ResponseEntity<UserResDto> updateUserPassword(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateUserPasswordReqDto reqDto
+            @Valid @RequestBody UpdateUserPasswordReqDto reqDto,
+            HttpServletRequest req
     ) {
-        UserResDto userResDto = userService.updateUserPassword(id, reqDto.getOldPassword(), reqDto.getNewPassword());
+        User findUser = sessionService.findUserBySession(req);
+        UserResDto userResDto = userService.updateUserPassword(findUser, reqDto.getOldPassword(), reqDto.getNewPassword());
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
 
@@ -69,7 +73,9 @@ public class UserController {
             @Valid @RequestBody DeleteUserReqDto reqDto,
             HttpServletRequest req
     ) {
-        userService.deleteUser(reqDto.getPassword(), req);
+        User findUser = sessionService.findUserBySession(req);
+        userService.deleteUser(findUser, reqDto.getPassword());
+        sessionService.logout(req);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

@@ -3,7 +3,9 @@ package com.example.scheduleappdev.controller;
 import com.example.scheduleappdev.dto.CreateScheduleReqDto;
 import com.example.scheduleappdev.dto.ScheduleResDto;
 import com.example.scheduleappdev.dto.UpdateScheduleReqDto;
+import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.service.ScheduleService;
+import com.example.scheduleappdev.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +23,15 @@ import java.util.List;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final SessionService sessionService;
 
     @PostMapping()
-    public ResponseEntity<ScheduleResDto> createSchedule(@Valid @RequestBody CreateScheduleReqDto reqDto) {
-        ScheduleResDto scheduleResDto = scheduleService.createSchedule(reqDto.getAuthorName(), reqDto.getTodoTitle(), reqDto.getTodoContents());
+    public ResponseEntity<ScheduleResDto> createSchedule(
+            @Valid @RequestBody CreateScheduleReqDto reqDto,
+            HttpServletRequest req
+    ) {
+        User findUser = sessionService.findUserBySession(req);
+        ScheduleResDto scheduleResDto = scheduleService.createSchedule(findUser, reqDto.getTodoTitle(), reqDto.getTodoContents());
         return new ResponseEntity<>(scheduleResDto, HttpStatus.CREATED);
     }
 
@@ -47,7 +54,8 @@ public class ScheduleController {
             @Valid @RequestBody UpdateScheduleReqDto reqDto,
             HttpServletRequest req
     ) {
-        ScheduleResDto scheduleResDto = scheduleService.updateSchedule(id, reqDto.getTodoTitle(), reqDto.getTodoContents(), req);
+        User findUser = sessionService.findUserBySession(req);
+        ScheduleResDto scheduleResDto = scheduleService.updateSchedule(id, findUser, reqDto.getTodoTitle(), reqDto.getTodoContents());
         return new ResponseEntity<>(scheduleResDto, HttpStatus.OK);
     }
 
@@ -56,7 +64,8 @@ public class ScheduleController {
             @PathVariable Long id,
             HttpServletRequest req
     ) {
-        scheduleService.deleteScheduleById(id, req);
+        User findUser = sessionService.findUserBySession(req);
+        scheduleService.deleteScheduleById(id, findUser);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
