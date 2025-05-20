@@ -31,13 +31,11 @@ public class UserService {
         return new UserResDto(userRepository.save(user));
     }
 
-    public UserResDto login(String userEmail, String password) {
-        User user = userRepository.findUserByUserEmailOrElseThrow(userEmail);
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
-        }
-        return new UserResDto(user);
+    public UserResDto login(String userEmail, String password) {
+        User findUser = userRepository.findUserByUserEmailOrElseThrow(userEmail);
+        checkUserPassword(password, findUser);
+        return new UserResDto(findUser);
     }
 
     public void makeSession(HttpServletRequest req, UserResDto userResDto) {
@@ -67,10 +65,7 @@ public class UserService {
     @Transactional
     public UserResDto updateUserPassword(Long id, String oldPassword, String newPassword) {
         User findUser = userRepository.findByIdOrElseThrow(id);
-        // 비밀번호로 비교
-        if (!passwordEncoder.matches(oldPassword, findUser.getPassword())) {
-            throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
-        }
+        checkUserPassword(oldPassword, findUser);
 
         String encodedPassword = passwordEncoder.encode(newPassword);
         findUser.updateUserPassword(encodedPassword);
@@ -85,14 +80,19 @@ public class UserService {
             UserResDto loginUser = (UserResDto) session.getAttribute(Const.LOGIN_USER);
             User findUser = userRepository.findByIdOrElseThrow(loginUser.getUserId());
 
-            if (!findUser.getPassword().equals(password)) {
-                throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
-            }
+            checkUserPassword(password, findUser);
+
             log.info("회원탈퇴 : name = {}", findUser.getUserName());
             userRepository.delete(findUser);
 
             log.info("로그아웃");
             session.invalidate();
+        }
+    }
+
+    public void checkUserPassword(String password, User user) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
         }
     }
 
