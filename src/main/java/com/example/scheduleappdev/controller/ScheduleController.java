@@ -4,6 +4,7 @@ import com.example.scheduleappdev.dto.CreateScheduleReqDto;
 import com.example.scheduleappdev.dto.ScheduleResDto;
 import com.example.scheduleappdev.dto.UpdateScheduleReqDto;
 import com.example.scheduleappdev.service.ScheduleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping()
-    public ResponseEntity<ScheduleResDto> createSchedule(@RequestBody CreateScheduleReqDto reqDto) {
+    public ResponseEntity<ScheduleResDto> createSchedule(@Valid @RequestBody CreateScheduleReqDto reqDto) {
         ScheduleResDto scheduleResDto = scheduleService.createSchedule(reqDto.getAuthorName(), reqDto.getTodoTitle(), reqDto.getTodoContents());
         return new ResponseEntity<>(scheduleResDto, HttpStatus.CREATED);
     }
@@ -40,7 +41,9 @@ public class ScheduleController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ScheduleResDto> updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleReqDto reqDto) {
+    public ResponseEntity<ScheduleResDto> updateSchedule(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateScheduleReqDto reqDto) {
         ScheduleResDto scheduleResDto = scheduleService.updateSchedule(id, reqDto.getAuthorName(), reqDto.getTodoTitle(), reqDto.getTodoContents());
         return new ResponseEntity<>(scheduleResDto, HttpStatus.OK);
     }

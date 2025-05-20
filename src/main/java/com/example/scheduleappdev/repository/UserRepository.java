@@ -1,9 +1,10 @@
 package com.example.scheduleappdev.repository;
 
 import com.example.scheduleappdev.entity.User;
+import com.example.scheduleappdev.exception.ConflictException;
+import com.example.scheduleappdev.exception.NotFoundException;
+import com.example.scheduleappdev.exception.UnauthorizedException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -17,23 +18,25 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     default User findUserByUserEmailAndPasswordOrElseThrow(String userEmail, String password) {
         return findUserByUserEmailAndPassword(userEmail, password).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호가 일치하지 않습니다."));
+                new UnauthorizedException("이메일과 비밀번호가 일치하지 않습니다."));
     }
 
     default User findUserByUserNameOrElseThrow(String userName) {
-        return findUserByUserName(userName).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist username = " + userName));
+        return findUserByUserName(userName).orElseThrow(() ->
+                new NotFoundException("유저 " + userName + " 이(가) 존재하지 않습니다."));
     }
 
     default User findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+        return findById(id).orElseThrow(() ->
+                new NotFoundException("유저가 존재하지 않습니다. id = " + id));
     }
 
     default void isExistUserNameOrEmail(String userName, String userEmail) {
         if (findUserByUserName(userName).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 가입된 유저입니다.");
+            throw new ConflictException("이미 가입된 유저입니다.");
         }
         if (findUserByUserEmail(userEmail).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 가입된 이메일입니다.");
+            throw new ConflictException("이미 가입된 이메일입니다.");
         }
     }
 

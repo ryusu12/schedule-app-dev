@@ -7,6 +7,7 @@ import com.example.scheduleappdev.dto.UserResDto;
 import com.example.scheduleappdev.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,14 +25,14 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResDto> createUser(@RequestBody CreateUserReqDto reqDto) {
+    public ResponseEntity<UserResDto> createUser(@Valid @RequestBody CreateUserReqDto reqDto) {
         UserResDto userResDto = userService.createUser(reqDto.getUserName(), reqDto.getUserEmail(), reqDto.getPassword());
         return new ResponseEntity<>(userResDto, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(
-            @RequestBody LoginUserReqDto reqDto,
+            @Valid @RequestBody LoginUserReqDto reqDto,
             HttpServletRequest req
     ) {
         UserResDto userResDto = userService.login(reqDto.getUserEmail(), reqDto.getPassword());
@@ -67,7 +68,10 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResDto> updateUserPassword(@PathVariable Long id, @RequestBody UpdateUserPasswordReqDto reqDto) {
+    public ResponseEntity<UserResDto> updateUserPassword(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserPasswordReqDto reqDto
+    ) {
         UserResDto userResDto = userService.updateUserPassword(id, reqDto.getOldPassword(), reqDto.getNewPassword());
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }

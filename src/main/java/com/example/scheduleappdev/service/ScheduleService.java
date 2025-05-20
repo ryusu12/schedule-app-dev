@@ -3,14 +3,13 @@ package com.example.scheduleappdev.service;
 import com.example.scheduleappdev.dto.ScheduleResDto;
 import com.example.scheduleappdev.entity.Schedule;
 import com.example.scheduleappdev.entity.User;
+import com.example.scheduleappdev.exception.UnauthorizedException;
 import com.example.scheduleappdev.repository.ScheduleRepository;
 import com.example.scheduleappdev.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class ScheduleService {
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
         // 이름으로 비교
         if (!findSchedule.getUser().getUserName().equals(authorName)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "작성자가 일치하지 않습니다.");
+            throw new UnauthorizedException("작성자가 일치하지 않습니다.");
         }
         findSchedule.updateSchedule(todoTitle, todoContents);
         log.info("일정 수정 : id = {}", id);

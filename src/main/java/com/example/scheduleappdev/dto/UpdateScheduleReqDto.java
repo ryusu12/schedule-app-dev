@@ -1,12 +1,17 @@
 package com.example.scheduleappdev.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
 @Getter
 public class UpdateScheduleReqDto {
 
+    @NotEmpty()
     private final String authorName;
+
+    @NotEmpty()
     private final String todoTitle;
+
     private final String todoContents;
 
     public UpdateScheduleReqDto(String authorName, String todoTitle, String todoContents) {
