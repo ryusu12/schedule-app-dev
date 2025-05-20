@@ -1,13 +1,10 @@
 package com.example.scheduleappdev.service;
 
 import com.example.scheduleappdev.config.PasswordEncoder;
-import com.example.scheduleappdev.common.Const;
 import com.example.scheduleappdev.dto.UserResDto;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.exception.UnauthorizedException;
 import com.example.scheduleappdev.repository.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,25 +28,10 @@ public class UserService {
         return new UserResDto(userRepository.save(user));
     }
 
-
     public UserResDto login(String userEmail, String password) {
         User findUser = userRepository.findUserByUserEmailOrElseThrow(userEmail);
         checkUserPassword(password, findUser);
         return new UserResDto(findUser);
-    }
-
-    public void makeSession(HttpServletRequest req, UserResDto userResDto) {
-        HttpSession session = req.getSession();
-        session.setAttribute(Const.LOGIN_USER, userResDto);
-        log.info("로그인 성공 : name = {}", userResDto.getUserName());
-    }
-
-    public void logout(HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        log.info("로그아웃");
     }
 
     public List<UserResDto> findAllUsers() {
@@ -63,31 +45,20 @@ public class UserService {
     }
 
     @Transactional
-    public UserResDto updateUserPassword(Long id, String oldPassword, String newPassword) {
-        User findUser = userRepository.findByIdOrElseThrow(id);
-        checkUserPassword(oldPassword, findUser);
+    public UserResDto updateUserPassword(User user, String oldPassword, String newPassword) {
+        checkUserPassword(oldPassword, user);
 
         String encodedPassword = passwordEncoder.encode(newPassword);
-        findUser.updateUserPassword(encodedPassword);
+        user.updateUserPassword(encodedPassword);
 
-        log.info("유저 수정 : name = {}", findUser.getUserName());
-        return new UserResDto(findUser);
+        log.info("유저 수정 : name = {}", user.getUserName());
+        return new UserResDto(user);
     }
 
-    public void deleteUser(String password, HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            UserResDto loginUser = (UserResDto) session.getAttribute(Const.LOGIN_USER);
-            User findUser = userRepository.findByIdOrElseThrow(loginUser.getUserId());
-
-            checkUserPassword(password, findUser);
-
-            log.info("회원탈퇴 : name = {}", findUser.getUserName());
-            userRepository.delete(findUser);
-
-            log.info("로그아웃");
-            session.invalidate();
-        }
+    public void deleteUser(User user, String password) {
+        checkUserPassword(password, user);
+        log.info("회원탈퇴 : name = {}", user.getUserName());
+        userRepository.delete(user);
     }
 
     public void checkUserPassword(String password, User user) {
