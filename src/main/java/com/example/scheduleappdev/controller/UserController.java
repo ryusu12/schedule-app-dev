@@ -76,9 +76,12 @@ public class UserController {
         return new ResponseEntity<>(userResDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
-        userService.deleteUserById(id);
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<Void> deleteUser(
+            @Valid @RequestBody DeleteUserReqDto reqDto,
+            HttpServletRequest req
+    ) {
+        userService.deleteUser(reqDto.getPassword(), req);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

@@ -52,10 +52,21 @@ public class UserService {
         return new UserResDto(findUser);
     }
 
-    public void deleteUserById(Long id) {
-        User findUser = userRepository.findByIdOrElseThrow(id);
-        log.info("유저 삭제 : name = {}", findUser.getUserName());
-        userRepository.delete(findUser);
+    public void deleteUser(String password, HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            UserResDto loginUser = (UserResDto) session.getAttribute("loginUser");
+            User findUser = userRepository.findByIdOrElseThrow(loginUser.getUserId());
+
+            if (!findUser.getPassword().equals(password)) {
+                throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
+            }
+            log.info("회원탈퇴 : name = {}", findUser.getUserName());
+            userRepository.delete(findUser);
+
+            log.info("로그아웃");
+            session.invalidate();
+        }
     }
 
 }
