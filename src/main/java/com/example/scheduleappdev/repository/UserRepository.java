@@ -19,11 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 new UnauthorizedException("이메일 " + userEmail + "을 사용하는 유저가 존재하지 않습니다."));
     }
 
-    default User findUserByUserNameOrElseThrow(String userName) {
-        return findUserByUserName(userName).orElseThrow(() ->
-                new NotFoundException("유저 " + userName + " 이(가) 존재하지 않습니다."));
-    }
-
     default User findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() ->
                 new NotFoundException("유저가 존재하지 않습니다. id = " + id));
