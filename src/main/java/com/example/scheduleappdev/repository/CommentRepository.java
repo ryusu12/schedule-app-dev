@@ -2,13 +2,12 @@ package com.example.scheduleappdev.repository;
 
 import com.example.scheduleappdev.entity.Comment;
 import com.example.scheduleappdev.exception.NotFoundException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-
-    Optional<Comment> findCommentBySchedule_Id(Long scheduleId);
 
     default Comment findCommentByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() ->
@@ -16,5 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     }
 
     Long countCommentBySchedule_Id(Long scheduleId);
+
+    List<Comment> findCommentBySchedule_IdOrderByUpdatedDateTimeDesc(Long scheduleId, Pageable pageable);
 
 }

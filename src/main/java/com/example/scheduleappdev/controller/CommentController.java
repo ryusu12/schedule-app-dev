@@ -38,8 +38,12 @@ public class CommentController {
 
     // 특정 일정에 있는 모든 댓글 조회
     @GetMapping()
-    public ResponseEntity<List<CommentResDto>> findCommentList(@RequestParam() Long scheduleId) {
-        List<CommentResDto> commentResDtoList = commentService.findCommentList(scheduleId);
+    public ResponseEntity<List<CommentResDto>> findCommentList(
+            @RequestParam() Long scheduleId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<CommentResDto> commentResDtoList = commentService.findCommentList(scheduleId, page, size);
         log.info("댓글 \"{}\"개 조회", commentResDtoList.size());
         return new ResponseEntity<>(commentResDtoList, HttpStatus.OK);
     }

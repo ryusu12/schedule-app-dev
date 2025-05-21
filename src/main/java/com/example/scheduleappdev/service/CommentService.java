@@ -9,6 +9,8 @@ import com.example.scheduleappdev.repository.CommentRepository;
 import com.example.scheduleappdev.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +35,9 @@ public class CommentService {
         return new CommentResDto(commentRepository.save(comment));
     }
 
-    public List<CommentResDto> findCommentList(Long scheduleId) {
-        return commentRepository.findCommentBySchedule_Id(scheduleId)
+    public List<CommentResDto> findCommentList(Long scheduleId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return commentRepository.findCommentBySchedule_IdOrderByUpdatedDateTimeDesc(scheduleId, pageable)
                 .stream().map(CommentResDto::new).toList();
     }
 
