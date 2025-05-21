@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 @Slf4j
 @Service
@@ -30,4 +31,14 @@ public class CommentService {
         return new CommentResDto(commentRepository.save(comment));
     }
 
+    public List<CommentResDto> findCommentList(Long scheduleId) {
+        return commentRepository.findCommentBySchedule_Id(scheduleId)
+                .stream().map(CommentResDto::new).toList();
+    }
+
+    public CommentResDto findCommentById(Long id) {
+        Comment comment = commentRepository.findCommentByIdOrElseThrow(id);
+        log.info("댓글 조회 : id = {}", id);
+        return new CommentResDto(comment);
+    }
 }
