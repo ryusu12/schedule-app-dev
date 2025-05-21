@@ -38,8 +38,11 @@ public class ScheduleController {
 
     // 일정 조회
     @GetMapping
-    public ResponseEntity<List<ScheduleResDto>> findScheduleList() {
-        List<ScheduleResDto> scheduleResDtoList = scheduleService.findScheduleList();
+    public ResponseEntity<List<ScheduleResDto>> findScheduleList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<ScheduleResDto> scheduleResDtoList = scheduleService.findScheduleList(page, size);
         log.info("일정 \"{}\"개 조회", scheduleResDtoList.size());
         return new ResponseEntity<>(scheduleResDtoList, HttpStatus.OK);
     }

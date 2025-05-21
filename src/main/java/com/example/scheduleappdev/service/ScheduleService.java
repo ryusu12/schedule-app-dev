@@ -4,9 +4,12 @@ import com.example.scheduleappdev.dto.res.ScheduleResDto;
 import com.example.scheduleappdev.entity.Schedule;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.exception.UnauthorizedException;
+import com.example.scheduleappdev.repository.CommentRepository;
 import com.example.scheduleappdev.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,23 +21,26 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final CommentRepository commentRepository;
 
     public ScheduleResDto createSchedule(User user, String title, String content) {
         Schedule schedule = new Schedule(title, content);
         schedule.setAuthor(user);
 
         log.info("일정 생성 : scheduleId = {}, author = {}", schedule.getId(), user.getName());
-        return new ScheduleResDto(scheduleRepository.save(schedule));
+        return createScheduleResDto(scheduleRepository.save(schedule));
     }
 
-    public List<ScheduleResDto> findScheduleList() {
-        return scheduleRepository.findAll().stream().map(ScheduleResDto::new).toList();
+    public List<ScheduleResDto> findScheduleList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return scheduleRepository.findAllByOrderByUpdatedDateTimeDesc(pageable)
+                .stream().map(this::createScheduleResDto).toList();
     }
 
     public ScheduleResDto findScheduleById(Long id) {
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
         log.info("일정 조회 : id = {}", id);
-        return new ScheduleResDto(findSchedule);
+        return createScheduleResDto(findSchedule);
     }
 
     @Transactional
@@ -44,7 +50,7 @@ public class ScheduleService {
 
         findSchedule.updateSchedule(title, content);
         log.info("일정 수정 : id = {}", id);
-        return new ScheduleResDto(findSchedule);
+        return createScheduleResDto(findSchedule);
     }
 
     public void deleteScheduleById(Long id, User user) {
@@ -60,6 +66,11 @@ public class ScheduleService {
             log.warn("작성자가 일치하지 않습니다.");
             throw new UnauthorizedException("작성자가 일치하지 않습니다.");
         }
+    }
+
+    private ScheduleResDto createScheduleResDto(Schedule schedule)  {
+        Long commentCount = commentRepository.countCommentBySchedule_Id(schedule.getId());
+        return new ScheduleResDto(schedule, commentCount);
     }
 
 }

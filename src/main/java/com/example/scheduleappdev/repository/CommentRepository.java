@@ -14,4 +14,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
         return findById(id).orElseThrow(() ->
                 new NotFoundException("댓글이 존재하지 않습니다. id = " + id));
     }
+
+    Long countCommentBySchedule_Id(Long scheduleId);
+
 }
