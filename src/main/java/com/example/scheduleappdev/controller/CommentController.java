@@ -1,6 +1,7 @@
 package com.example.scheduleappdev.controller;
 
 import com.example.scheduleappdev.dto.req.CreateCommentReqDto;
+import com.example.scheduleappdev.dto.req.UpdateCommentReqDto;
 import com.example.scheduleappdev.dto.res.CommentResDto;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.service.CommentService;
@@ -47,6 +48,18 @@ public class CommentController {
     @GetMapping("/{id}")
     public ResponseEntity<CommentResDto> findCommentById(@PathVariable Long id) {
         CommentResDto commentResDto = commentService.findCommentById(id);
+        return new ResponseEntity<>(commentResDto, HttpStatus.OK);
+    }
+
+    // 본인 댓글 수정
+    @PatchMapping("/{id}")
+    public ResponseEntity<CommentResDto> updateComment(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateCommentReqDto reqDto,
+            HttpServletRequest req
+    ) {
+        User findUser = sessionService.findUserBySession(req);
+        CommentResDto commentResDto = commentService.updateComment(id, findUser, reqDto.getContent());
         return new ResponseEntity<>(commentResDto, HttpStatus.OK);
     }
 

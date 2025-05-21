@@ -4,11 +4,13 @@ import com.example.scheduleappdev.dto.res.CommentResDto;
 import com.example.scheduleappdev.entity.Comment;
 import com.example.scheduleappdev.entity.Schedule;
 import com.example.scheduleappdev.entity.User;
+import com.example.scheduleappdev.exception.UnauthorizedException;
 import com.example.scheduleappdev.repository.CommentRepository;
 import com.example.scheduleappdev.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,5 +42,22 @@ public class CommentService {
         Comment comment = commentRepository.findCommentByIdOrElseThrow(id);
         log.info("댓글 조회 : id = {}", id);
         return new CommentResDto(comment);
+    }
+
+    @Transactional
+    public CommentResDto updateComment(Long id, User user, String content) {
+        Comment findComment = commentRepository.findCommentByIdOrElseThrow(id);
+        checkCommentAuthor(findComment, user);
+
+        findComment.updateComment(content);
+        log.info("댓글 수정 : id = {}", id);
+        return new CommentResDto(findComment);
+    }
+
+    private void checkCommentAuthor(Comment comment, User user) {
+        if (!comment.getAuthor().equals(user)) {
+            log.warn("작성자가 일치하지 않습니다.");
+            throw new UnauthorizedException("작성자가 일치하지 않습니다.");
+        }
     }
 }
