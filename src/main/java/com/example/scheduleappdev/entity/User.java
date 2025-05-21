@@ -10,13 +10,13 @@ public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    private String userName;
+    private String name;
 
     @Column(nullable = false, unique = true)
-    private String userEmail;
+    private String email;
 
     @Column(nullable = false)
     private String password;
@@ -24,9 +24,9 @@ public class User extends BaseTimeEntity {
     public User() {
     }
 
-    public User(String userName, String userEmail, String password) {
-        this.userName = userName;
-        this.userEmail = userEmail;
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
         this.password = password;
     }
 

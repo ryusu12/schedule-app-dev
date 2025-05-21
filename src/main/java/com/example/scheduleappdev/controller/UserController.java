@@ -1,6 +1,10 @@
 package com.example.scheduleappdev.controller;
 
-import com.example.scheduleappdev.dto.*;
+import com.example.scheduleappdev.dto.req.CreateUserReqDto;
+import com.example.scheduleappdev.dto.req.DeleteUserReqDto;
+import com.example.scheduleappdev.dto.req.LoginUserReqDto;
+import com.example.scheduleappdev.dto.req.UpdateUserPasswordReqDto;
+import com.example.scheduleappdev.dto.res.UserResDto;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.service.SessionService;
 import com.example.scheduleappdev.service.UserService;
@@ -50,8 +54,8 @@ public class UserController {
 
     // 유저 조회
     @GetMapping
-    public ResponseEntity<List<UserResDto>> findAllUsers() {
-        List<UserResDto> userResDtoList = userService.findAllUsers();
+    public ResponseEntity<List<UserResDto>> findUserList() {
+        List<UserResDto> userResDtoList = userService.findUserList();
         log.info("유저 \"{}\"명 조회", userResDtoList.size());
         return new ResponseEntity<>(userResDtoList, HttpStatus.OK);
     }

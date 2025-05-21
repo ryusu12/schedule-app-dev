@@ -11,30 +11,30 @@ public class Schedule extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long scheduleId;
+    private Long id;
 
     @Column(nullable = false)
-    private String todoTitle;
+    private String title;
 
     @Column(columnDefinition = "longtext")
-    private String todoContents;
+    private String content;
 
     @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User author;
 
     public Schedule() {
     }
 
-    public Schedule(String todoTitle, String todoContents) {
-        this.todoTitle = todoTitle;
-        this.todoContents = todoContents;
+    public Schedule(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
-    public void updateSchedule(String todoTitle, String todoContents) {
-        this.todoTitle = todoTitle;
-        this.todoContents = todoContents;
+    public void updateSchedule(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
 }

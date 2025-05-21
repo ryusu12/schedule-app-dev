@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
-    default Schedule findByIdOrElseThrow(Long id) {
+    default Schedule findScheduleByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() ->
                 new NotFoundException("일정이 존재하지 않습니다. id = " + id));
     }

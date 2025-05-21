@@ -1,8 +1,8 @@
 package com.example.scheduleappdev.controller;
 
-import com.example.scheduleappdev.dto.CreateScheduleReqDto;
-import com.example.scheduleappdev.dto.ScheduleResDto;
-import com.example.scheduleappdev.dto.UpdateScheduleReqDto;
+import com.example.scheduleappdev.dto.req.CreateScheduleReqDto;
+import com.example.scheduleappdev.dto.res.ScheduleResDto;
+import com.example.scheduleappdev.dto.req.UpdateScheduleReqDto;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.service.ScheduleService;
 import com.example.scheduleappdev.service.SessionService;
@@ -32,14 +32,14 @@ public class ScheduleController {
             HttpServletRequest req
     ) {
         User findUser = sessionService.findUserBySession(req);
-        ScheduleResDto scheduleResDto = scheduleService.createSchedule(findUser, reqDto.getTodoTitle(), reqDto.getTodoContents());
+        ScheduleResDto scheduleResDto = scheduleService.createSchedule(findUser, reqDto.getTitle(), reqDto.getContent());
         return new ResponseEntity<>(scheduleResDto, HttpStatus.CREATED);
     }
 
     // 일정 조회
     @GetMapping
-    public ResponseEntity<List<ScheduleResDto>> findAllSchedules() {
-        List<ScheduleResDto> scheduleResDtoList = scheduleService.findAllSchedules();
+    public ResponseEntity<List<ScheduleResDto>> findScheduleList() {
+        List<ScheduleResDto> scheduleResDtoList = scheduleService.findScheduleList();
         log.info("일정 \"{}\"개 조회", scheduleResDtoList.size());
         return new ResponseEntity<>(scheduleResDtoList, HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class ScheduleController {
             HttpServletRequest req
     ) {
         User findUser = sessionService.findUserBySession(req);
-        ScheduleResDto scheduleResDto = scheduleService.updateSchedule(id, findUser, reqDto.getTodoTitle(), reqDto.getTodoContents());
+        ScheduleResDto scheduleResDto = scheduleService.updateSchedule(id, findUser, reqDto.getTitle(), reqDto.getContent());
         return new ResponseEntity<>(scheduleResDto, HttpStatus.OK);
     }
 

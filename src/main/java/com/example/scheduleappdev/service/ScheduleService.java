@@ -1,6 +1,6 @@
 package com.example.scheduleappdev.service;
 
-import com.example.scheduleappdev.dto.ScheduleResDto;
+import com.example.scheduleappdev.dto.res.ScheduleResDto;
 import com.example.scheduleappdev.entity.Schedule;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.exception.UnauthorizedException;
@@ -19,36 +19,36 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    public ScheduleResDto createSchedule(User user, String todoTitle, String todoContents) {
-        Schedule schedule = new Schedule(todoTitle, todoContents);
-        schedule.setUser(user);
+    public ScheduleResDto createSchedule(User user, String title, String content) {
+        Schedule schedule = new Schedule(title, content);
+        schedule.setAuthor(user);
 
-        log.info("일정 생성 : scheduleId = {}, userName = {}", schedule.getScheduleId(), user.getUserName());
+        log.info("일정 생성 : scheduleId = {}, author = {}", schedule.getId(), user.getName());
         return new ScheduleResDto(scheduleRepository.save(schedule));
     }
 
-    public List<ScheduleResDto> findAllSchedules() {
+    public List<ScheduleResDto> findScheduleList() {
         return scheduleRepository.findAll().stream().map(ScheduleResDto::new).toList();
     }
 
     public ScheduleResDto findScheduleById(Long id) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
         log.info("일정 조회 : id = {}", id);
         return new ScheduleResDto(findSchedule);
     }
 
     @Transactional
-    public ScheduleResDto updateSchedule(Long id, User user, String todoTitle, String todoContents) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+    public ScheduleResDto updateSchedule(Long id, User user, String title, String content) {
+        Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
         checkScheduleAuthor(findSchedule, user);
 
-        findSchedule.updateSchedule(todoTitle, todoContents);
+        findSchedule.updateSchedule(title, content);
         log.info("일정 수정 : id = {}", id);
         return new ScheduleResDto(findSchedule);
     }
 
     public void deleteScheduleById(Long id, User user) {
-        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
         checkScheduleAuthor(findSchedule, user);
 
         log.info("일정 삭제 : id = {}", id);
@@ -56,7 +56,7 @@ public class ScheduleService {
     }
 
     private void checkScheduleAuthor(Schedule schedule, User user) {
-        if (!schedule.getUser().getUserName().equals(user.getUserName())) {
+        if (!schedule.getAuthor().equals(user)) {
             log.warn("작성자가 일치하지 않습니다.");
             throw new UnauthorizedException("작성자가 일치하지 않습니다.");
         }

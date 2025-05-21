@@ -1,4 +1,4 @@
-package com.example.scheduleappdev.dto;
+package com.example.scheduleappdev.dto.req;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;

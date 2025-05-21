@@ -1,7 +1,7 @@
 package com.example.scheduleappdev.service;
 
 import com.example.scheduleappdev.common.Const;
-import com.example.scheduleappdev.dto.UserResDto;
+import com.example.scheduleappdev.dto.res.UserResDto;
 import com.example.scheduleappdev.entity.User;
 import com.example.scheduleappdev.exception.UnauthorizedException;
 import com.example.scheduleappdev.repository.UserRepository;
@@ -36,7 +36,7 @@ public class SessionService {
         HttpSession session = validateSession(req);
         UserResDto loginUser = (UserResDto) session.getAttribute(Const.LOGIN_USER);
 
-        return userRepository.findByIdOrElseThrow(loginUser.getUserId());
+        return userRepository.findUserByIdOrElseThrow(loginUser.getUserId());
     }
 
     private HttpSession validateSession(HttpServletRequest req) {

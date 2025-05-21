@@ -1,21 +1,21 @@
 CREATE TABLE `schedule`
 (
-    `schedule_id`   BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '일정_ID',
-    `user_id`       BIGINT       NOT NULL COMMENT '유저_ID',
-    `todo_title`    VARCHAR(100) NOT NULL COMMENT '할일 제목',
-    `todo_contents` LONGTEXT COMMENT '할일 내용',
-    `created_date`  DATETIME     NOT NULL COMMENT '작성일',
-    `updated_date`  DATETIME     NOT NULL COMMENT '수정일'
+    `schedule_id`       BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '일정_ID',
+    `user_id`           BIGINT       NOT NULL COMMENT '유저_ID',
+    `todo_title`        VARCHAR(100) NOT NULL COMMENT '할일 제목',
+    `todo_contents`     LONGTEXT COMMENT '할일 내용',
+    `created_date_time` DATETIME     NOT NULL COMMENT '작성일',
+    `updated_date_time` DATETIME     NOT NULL COMMENT '수정일'
 );
 
 CREATE TABLE `user`
 (
-    `user_id`      BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '유저_ID',
-    `user_name`    VARCHAR(100) NOT NULL COMMENT '유저명',
-    `user_email`   VARCHAR(100) NOT NULL COMMENT '이메일',
-    `password`     VARCHAR(100) NOT NULL COMMENT '비밀번호',
-    `created_date` DATETIME     NOT NULL COMMENT '작성일',
-    `updated_date` DATETIME     NOT NULL COMMENT '수정일'
+    `user_id`           BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '유저_ID',
+    `user_name`         VARCHAR(100) NOT NULL COMMENT '유저명',
+    `user_email`        VARCHAR(100) NOT NULL COMMENT '이메일',
+    `password`          VARCHAR(100) NOT NULL COMMENT '비밀번호',
+    `created_date_time` DATETIME     NOT NULL COMMENT '작성일',
+    `updated_date_time` DATETIME     NOT NULL COMMENT '수정일'
 );
 
 ALTER TABLE `schedule`
