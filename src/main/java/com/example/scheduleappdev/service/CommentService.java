@@ -54,10 +54,19 @@ public class CommentService {
         return new CommentResDto(findComment);
     }
 
+    public void deleteCommentById(Long id, User user) {
+        Comment findComment = commentRepository.findCommentByIdOrElseThrow(id);
+        checkCommentAuthor(findComment, user);
+
+        log.info("댓글 삭제 : id = {}", id);
+        commentRepository.delete(findComment);
+    }
+
     private void checkCommentAuthor(Comment comment, User user) {
         if (!comment.getAuthor().equals(user)) {
             log.warn("작성자가 일치하지 않습니다.");
             throw new UnauthorizedException("작성자가 일치하지 않습니다.");
         }
     }
+
 }

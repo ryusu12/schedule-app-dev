@@ -63,4 +63,15 @@ public class CommentController {
         return new ResponseEntity<>(commentResDto, HttpStatus.OK);
     }
 
+    // 본인 댓글 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCommentById(
+            @PathVariable Long id,
+            HttpServletRequest req
+    ) {
+        User findUser = sessionService.findUserBySession(req);
+        commentService.deleteCommentById(id, findUser);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
