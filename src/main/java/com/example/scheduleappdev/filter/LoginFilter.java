@@ -1,6 +1,7 @@
 package com.example.scheduleappdev.filter;
 
 import com.example.scheduleappdev.common.Const;
+import com.example.scheduleappdev.dto.res.ErrorResDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,8 +13,6 @@ import org.springframework.util.PatternMatchUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class LoginFilter implements Filter {
@@ -25,30 +24,17 @@ public class LoginFilter implements Filter {
             ServletRequest req,
             ServletResponse res,
             FilterChain chain
-    )throws IOException, ServletException {
+    ) throws IOException, ServletException {
         HttpServletRequest httpReq = (HttpServletRequest) req;
         HttpServletResponse httpRes = (HttpServletResponse) res;
 
         String reqURI = httpReq.getRequestURI();
 
-        if(!isWhiteList(reqURI)) {
+        if (!isWhiteList(reqURI)) {
             HttpSession session = httpReq.getSession(false);
-            if(session == null || session.getAttribute(Const.LOGIN_USER) == null) {
-                Map<String, Object> errorBody = new HashMap<>();
-                errorBody.put("timestamp", LocalDateTime.now().toString());
-                errorBody.put("status", HttpStatus.UNAUTHORIZED.value());
-                errorBody.put("error", "UNAUTHORIZED");
-                errorBody.put("message", "로그인이 필요합니다.");
-                errorBody.put("path", reqURI);
-
-                String json = new ObjectMapper().writeValueAsString(errorBody);
-
-                httpRes.setStatus(HttpStatus.UNAUTHORIZED.value());
-                httpRes.setContentType("application/json");
-                httpRes.setCharacterEncoding("UTF-8");
-                httpRes.getWriter().write(json);
-
-                log.warn("로그인이 필요합니다.");
+            if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
+                sendUnauthorizedResponse(httpRes);
+                log.warn("로그인이 필요합니다 : URI = {}", reqURI);
                 return;
             }
         }
@@ -57,6 +43,34 @@ public class LoginFilter implements Filter {
 
     public boolean isWhiteList(String reqURI) {
         return PatternMatchUtils.simpleMatch(WHITE_LIST, reqURI);
+    }
+
+    private void sendUnauthorizedResponse(HttpServletResponse res) throws IOException {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        String json = toJsonErrorRes(createErrorResDto(status));
+
+        res.setStatus(status.value());
+        res.setContentType("application/json");
+        res.setCharacterEncoding("UTF-8");
+        res.getWriter().write(json);
+    }
+
+    private ErrorResDto createErrorResDto(HttpStatus status) {
+        return new ErrorResDto(
+                status.value(),
+                status.getReasonPhrase(),
+                "로그인이 필요합니다.",
+                LocalDateTime.now()
+        );
+    }
+
+    private String toJsonErrorRes(ErrorResDto errorResDto) {
+        try {
+            return new ObjectMapper().writeValueAsString(errorResDto);
+        } catch (IOException e) {
+            log.error("JSON 변환 오류", e);
+            return "{}";
+        }
     }
 
 }
