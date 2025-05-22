@@ -3,6 +3,8 @@ package com.example.scheduleappdev.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Entity
@@ -19,11 +21,13 @@ public class Comment extends BaseTimeEntity {
     @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User author;
 
     @Setter
     @ManyToOne
     @JoinColumn(name = "schedule_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Schedule schedule;
 
     public Comment() {
