@@ -3,7 +3,6 @@ package com.example.scheduleappdev.service;
 import com.example.scheduleappdev.common.Const;
 import com.example.scheduleappdev.dto.res.UserResDto;
 import com.example.scheduleappdev.entity.User;
-import com.example.scheduleappdev.exception.UnauthorizedException;
 import com.example.scheduleappdev.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -33,19 +32,9 @@ public class SessionService {
     }
 
     public User findUserBySession(HttpServletRequest req) {
-        HttpSession session = validateSession(req);
-        UserResDto loginUser = (UserResDto) session.getAttribute(Const.LOGIN_USER);
-
-        return userRepository.findUserByIdOrElseThrow(loginUser.getUserId());
-    }
-
-    private HttpSession validateSession(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
-        if (session == null) {
-            log.warn("세션이 존재하지 않습니다.");
-            throw new UnauthorizedException("세션이 존재하지 않습니다.");
-        }
-        return session;
+        UserResDto loginUser = (UserResDto) session.getAttribute(Const.LOGIN_USER);
+        return userRepository.findUserByIdOrElseThrow(loginUser.getUserId());
     }
 
 }

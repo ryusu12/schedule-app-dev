@@ -42,9 +42,9 @@ public class CommentService {
     }
 
     public CommentResDto findCommentById(Long id) {
-        Comment comment = commentRepository.findCommentByIdOrElseThrow(id);
+        Comment findComment = commentRepository.findCommentByIdOrElseThrow(id);
         log.info("댓글 조회 : id = {}", id);
-        return new CommentResDto(comment);
+        return new CommentResDto(findComment);
     }
 
     @Transactional

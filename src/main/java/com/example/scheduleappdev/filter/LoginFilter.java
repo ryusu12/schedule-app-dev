@@ -1,7 +1,7 @@
 package com.example.scheduleappdev.filter;
 
 import com.example.scheduleappdev.common.Const;
-import com.example.scheduleappdev.dto.res.ErrorResDto;
+import com.example.scheduleappdev.dto.res.err.ErrorResDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class LoginFilter implements Filter {
 
         if (!isWhiteList(reqURI)) {
             HttpSession session = httpReq.getSession(false);
-            if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
+            if (isNotLogin(session)) {
                 sendUnauthorizedResponse(httpRes);
                 log.warn("로그인이 필요합니다 : URI = {}", reqURI);
                 return;
@@ -41,13 +41,17 @@ public class LoginFilter implements Filter {
         chain.doFilter(req, res);
     }
 
-    public boolean isWhiteList(String reqURI) {
+    private boolean isWhiteList(String reqURI) {
         return PatternMatchUtils.simpleMatch(WHITE_LIST, reqURI);
+    }
+
+    private boolean isNotLogin(HttpSession session) {
+        return session == null || session.getAttribute(Const.LOGIN_USER) == null;
     }
 
     private void sendUnauthorizedResponse(HttpServletResponse res) throws IOException {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        String json = toJsonErrorRes(createErrorResDto(status));
+        String json = new ObjectMapper().writeValueAsString(createErrorResDto(status));
 
         res.setStatus(status.value());
         res.setContentType("application/json");
@@ -62,15 +66,6 @@ public class LoginFilter implements Filter {
                 "로그인이 필요합니다.",
                 LocalDateTime.now()
         );
-    }
-
-    private String toJsonErrorRes(ErrorResDto errorResDto) {
-        try {
-            return new ObjectMapper().writeValueAsString(errorResDto);
-        } catch (IOException e) {
-            log.error("JSON 변환 오류", e);
-            return "{}";
-        }
     }
 
 }

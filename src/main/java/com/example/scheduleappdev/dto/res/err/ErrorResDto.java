@@ -1,4 +1,4 @@
-package com.example.scheduleappdev.dto.res;
+package com.example.scheduleappdev.dto.res.err;
 
 import lombok.Getter;
 

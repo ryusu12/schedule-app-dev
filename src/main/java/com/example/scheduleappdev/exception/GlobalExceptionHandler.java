@@ -1,7 +1,8 @@
 package com.example.scheduleappdev.exception;
 
-import com.example.scheduleappdev.dto.res.ErrorListResDto;
-import com.example.scheduleappdev.dto.res.ErrorResDto;
+import com.example.scheduleappdev.dto.res.err.ErrorDetailDto;
+import com.example.scheduleappdev.dto.res.err.ErrorListResDto;
+import com.example.scheduleappdev.dto.res.err.ErrorResDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,24 +10,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorListResDto> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<Map<String, String>> errorList = ex.getBindingResult().getFieldErrors().stream().map(
-                error -> {
-                    Map<String, String> errorDetail = new HashMap<>();
-                    errorDetail.put("field", error.getField());
-                    errorDetail.put("message", error.getDefaultMessage());
-                    return errorDetail;
-                }).toList();
-        ErrorListResDto errorListDto = createErrorListDto(HttpStatus.BAD_REQUEST, errorList);
-        return new ResponseEntity<>(errorListDto, HttpStatus.BAD_REQUEST);
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        List<ErrorDetailDto> errorDetailList = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> new ErrorDetailDto(error.getField(), error.getDefaultMessage()))
+                .toList();
+
+        ErrorListResDto errorListDto = createErrorListDto(status, errorDetailList);
+        return new ResponseEntity<>(errorListDto, status);
     }
 
     @ExceptionHandler({
@@ -56,11 +53,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    private ErrorListResDto createErrorListDto(HttpStatus status, List<Map<String, String>> message) {
+    private ErrorListResDto createErrorListDto(HttpStatus status, List<ErrorDetailDto> errorDetailList) {
         return new ErrorListResDto(
                 status.value(),
                 status.getReasonPhrase(),
-                message,
+                errorDetailList,
                 LocalDateTime.now()
         );
     }
