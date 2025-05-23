@@ -10,8 +10,7 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     default Schedule findScheduleByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() ->
-                new NotFoundException("일정이 존재하지 않습니다. id = " + id));
+        return findById(id).orElseThrow(() -> new NotFoundException("일정이 존재하지 않습니다. id = " + id));
     }
 
     List<Schedule> findAllByOrderByUpdatedDateTimeDesc(Pageable pageable);

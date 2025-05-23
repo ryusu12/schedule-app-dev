@@ -17,12 +17,14 @@ public class SessionService {
 
     private final UserRepository userRepository;
 
+    // 로그인
     public void makeSession(HttpServletRequest req, UserResDto userResDto) {
         HttpSession session = req.getSession();
         session.setAttribute(Const.LOGIN_USER, userResDto);
         log.info("로그인 성공 : name = {}", userResDto.getUserName());
     }
 
+    // 로그아웃
     public void logout(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session != null) {
@@ -31,6 +33,7 @@ public class SessionService {
         }
     }
 
+    // 유저 정보 가져오기
     public User findUserBySession(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         UserResDto loginUser = (UserResDto) session.getAttribute(Const.LOGIN_USER);

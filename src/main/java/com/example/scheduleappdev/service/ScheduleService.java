@@ -23,6 +23,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final CommentRepository commentRepository;
 
+    // 생성
     public ScheduleResDto createSchedule(User user, String title, String content) {
         Schedule schedule = new Schedule(title, content);
         schedule.setAuthor(user);
@@ -31,6 +32,7 @@ public class ScheduleService {
         return createScheduleResDto(scheduleRepository.save(schedule));
     }
 
+    // 조회
     public List<ScheduleResDto> findScheduleList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return scheduleRepository.findAllByOrderByUpdatedDateTimeDesc(pageable)
@@ -43,6 +45,7 @@ public class ScheduleService {
         return createScheduleResDto(findSchedule);
     }
 
+    // 수정
     @Transactional
     public ScheduleResDto updateSchedule(Long id, User user, String title, String content) {
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
@@ -53,6 +56,7 @@ public class ScheduleService {
         return createScheduleResDto(findSchedule);
     }
 
+    // 삭제
     public void deleteScheduleById(Long id, User user) {
         Schedule findSchedule = scheduleRepository.findScheduleByIdOrElseThrow(id);
         checkScheduleAuthor(findSchedule, user);
@@ -68,7 +72,7 @@ public class ScheduleService {
         }
     }
 
-    private ScheduleResDto createScheduleResDto(Schedule schedule)  {
+    private ScheduleResDto createScheduleResDto(Schedule schedule) {
         Long commentCount = commentRepository.countCommentBySchedule_Id(schedule.getId());
         return new ScheduleResDto(schedule, commentCount);
     }

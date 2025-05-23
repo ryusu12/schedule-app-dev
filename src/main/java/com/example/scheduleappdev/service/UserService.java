@@ -20,20 +20,25 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // 생성
     public UserResDto createUser(String name, String email, String password) {
         userRepository.isExistUserNameOrEmail(name, email);
+
         String encodedPassword = passwordEncoder.encode(password);
         User user = new User(name, email, encodedPassword);
+
         log.info("유저 생성 : name = {}", name);
         return new UserResDto(userRepository.save(user));
     }
 
+    // 로그인
     public UserResDto login(String email, String password) {
         User findUser = userRepository.findUserByEmailOrElseThrow(email);
         checkUserPassword(password, findUser);
         return new UserResDto(findUser);
     }
 
+    // 조회
     public List<UserResDto> findUserList() {
         return userRepository.findAll().stream().map(UserResDto::new).toList();
     }
@@ -44,6 +49,7 @@ public class UserService {
         return new UserResDto(user);
     }
 
+    // 수정
     @Transactional
     public UserResDto updateUserPassword(User user, String oldPassword, String newPassword) {
         checkUserPassword(oldPassword, user);
@@ -55,6 +61,7 @@ public class UserService {
         return new UserResDto(user);
     }
 
+    // 삭제
     public void deleteUser(User user, String password) {
         checkUserPassword(password, user);
         log.info("회원탈퇴 : name = {}", user.getName());

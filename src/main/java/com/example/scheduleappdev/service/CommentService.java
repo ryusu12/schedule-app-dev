@@ -24,6 +24,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final ScheduleRepository scheduleRepository;
 
+    // 생성
     public CommentResDto createComment(User user, Long scheduleId, String content) {
         Comment comment = new Comment(content);
         Schedule schedule = scheduleRepository.findScheduleByIdOrElseThrow(scheduleId);
@@ -35,6 +36,7 @@ public class CommentService {
         return new CommentResDto(commentRepository.save(comment));
     }
 
+    // 조회
     public List<CommentResDto> findCommentList(Long scheduleId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return commentRepository.findCommentBySchedule_IdOrderByUpdatedDateTimeDesc(scheduleId, pageable)
@@ -47,6 +49,7 @@ public class CommentService {
         return new CommentResDto(findComment);
     }
 
+    // 수정
     @Transactional
     public CommentResDto updateComment(Long id, User user, String content) {
         Comment findComment = commentRepository.findCommentByIdOrElseThrow(id);
@@ -57,6 +60,7 @@ public class CommentService {
         return new CommentResDto(findComment);
     }
 
+    // 삭제
     public void deleteCommentById(Long id, User user) {
         Comment findComment = commentRepository.findCommentByIdOrElseThrow(id);
         checkCommentAuthor(findComment, user);

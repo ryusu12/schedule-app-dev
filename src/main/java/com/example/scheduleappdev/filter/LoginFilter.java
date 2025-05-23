@@ -41,6 +41,7 @@ public class LoginFilter implements Filter {
         chain.doFilter(req, res);
     }
 
+    // 조건
     private boolean isWhiteList(String reqURI) {
         return PatternMatchUtils.simpleMatch(WHITE_LIST, reqURI);
     }
@@ -49,6 +50,7 @@ public class LoginFilter implements Filter {
         return session == null || session.getAttribute(Const.LOGIN_USER) == null;
     }
 
+    // 오류 메시지 생성
     private void sendUnauthorizedResponse(HttpServletResponse res) throws IOException {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         String json = new ObjectMapper().writeValueAsString(createErrorResDto(status));

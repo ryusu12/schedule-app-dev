@@ -10,8 +10,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     default Comment findCommentByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() ->
-                new NotFoundException("댓글이 존재하지 않습니다. id = " + id));
+        return findById(id).orElseThrow(() -> new NotFoundException("댓글이 존재하지 않습니다. id = " + id));
     }
 
     Long countCommentBySchedule_Id(Long scheduleId);
